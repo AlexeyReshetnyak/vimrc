@@ -207,3 +207,5 @@ let g:jedi#documentation_command = "K"
 "let g:jedi#completions_command = "<C-Space>"
 let g:jedi#completions_command = "<C-n>"
 autocmd FileType python setlocal completeopt-=preview
+map <F1> <S-k>
+imap <F1> <S-k>
