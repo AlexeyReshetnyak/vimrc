@@ -6,6 +6,8 @@ execute pathogen#infect()
 if has("gui_running")
   set guifont=Bitstream\ Vera\ Sans\ Mono\ 16
   set lines=999 columns=999
+"  set lines=999 columns=80
+"?  winp 468 0
   if !(&diff)
     let g:NERDTreeWinSize=35
     autocmd VimEnter * NERDTree | wincmd p
@@ -103,6 +105,8 @@ let Tlist_Use_Right_Window   = 1
 
 set colorcolumn=80
 highlight ColorColumn ctermbg=0 guibg=grey25
+set cursorline
+highlight CursorLine ctermbg=0 guibg=grey25
 
 ":nmap <silent> <A-k> gk
 ":nmap <silent> <A-j> gj
@@ -135,38 +139,6 @@ cabbrev m make -j4
 autocmd QuickFixCmdPost [^l]* nested cwindow
 autocmd QuickFixCmdPost    l* nested lwindow
 
-"autocmd FileType python nnoremap <buffer> <F5> :exec '!clear; python' shellescape(@%, 1)<cr>
-
-"nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
-
-"noremap <F5> :!python %<cr>
-"nnoremap <F5> :echo system('python2 "' . expand('%') . '"')<cr>
-
-" Quick run via <F5>
-"nnoremap <F5> :call <SID>compile_and_run()<CR>
-
-augroup SPACEVIM_ASYNCRUN
-    autocmd!
-    " Automatically open the quickfix window
-    autocmd User AsyncRunStart call asyncrun#quickfix_toggle(15, 1)
-augroup END
-
-function! s:compile_and_run()
-    exec 'w'
-    if &filetype == 'c'
-        exec "AsyncRun! gcc % -o %<; time ./%<"
-    elseif &filetype == 'cpp'
-       exec "AsyncRun! g++ -std=c++11 % -o %<; time ./%<"
-    elseif &filetype == 'java'
-       exec "AsyncRun! javac %; time java %<"
-    elseif &filetype == 'sh'
-       exec "AsyncRun! time bash %"
-    elseif &filetype == 'python'
-       exec "AsyncRun! python %"
-"       exec "AsyncRun! jumpapp -p gnome-terminal -x sh -c 'ls -l; bash'"
-    endif
-endfunction
-
 "au FocusLost * :wa
 "
 "What is that?
@@ -174,9 +146,7 @@ let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_
 
 command! -nargs=* -bar -bang -count=0 -complete=dir E Explore <args>
 
-au FileType python map <silent> <S-b> Oimport ipdb; ipdb.set_trace(context=10)<esc> :w<CR>
-
-"map <F5> :exe "ConqueTermSplit python -i " . expand("%") <CR>
+au FileType python map <silent> <F9> Oimport ipdb; ipdb.set_trace(context=10)<esc> :w<CR>
 
 set laststatus=2
 
@@ -202,10 +172,49 @@ highlight lCursor guifg=NONE guibg=Cyan
 
 set wrap
 
+set scrolloff=3 " Keep 3 lines below and above the cursor
+set guioptions+=a " For copying in system clipboard and paste in a terminal
+
+
+augroup SPACEVIM_ASYNCRUN
+    autocmd!
+"      Automatically open the quickfix window
+      autocmd User AsyncRunStart call asyncrun#quickfix_toggle(5, 1)
+augroup END
+
+function! s:compile_and_run()
+    exec 'w'
+    if &filetype == 'c'
+        exec "AsyncRun! make -j4"
+    elseif &filetype == 'cpp'
+"       exec "AsyncRun! make -j4"
+    elseif &filetype == 'sh'
+       exec "AsyncRun! bash %"
+    elseif &filetype == 'python'
+       exec "AsyncRun! python %"
+    endif
+endfunction
+
+" Quick run via <F5>
+nnoremap <C-F5> :call <SID>compile_and_run()<CR>
+"nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr><F5>
+"nnoremap <buffer> <F5> :exec '!ls'<cr><F5>
+"nnoremap <F5> :Start python -i %<cr>
+"nnoremap <F5> :Dispatch xterm -hold -e python %<cr>
+nnoremap <F5> :!python %<cr>
+
+set autochdir
+
+"augroup myvimrc
+"    au!
+"    au BufWritePost .vimrc so ~/.vimrc
+"augroup END
+
 let g:jedi#popup_on_dot = 0
-let g:jedi#documentation_command = "K"
+let g:jedi#documentation_command = "<S-k>"
 "let g:jedi#completions_command = "<C-Space>"
 let g:jedi#completions_command = "<C-n>"
 autocmd FileType python setlocal completeopt-=preview
-map <F1> <S-k>
-imap <F1> <S-k>
+
+map <F12> <S-k>
+imap <F12> <S-k>
