@@ -4,31 +4,10 @@ runtime! debian.vim
 execute pathogen#infect()
 
 if has("gui_running")
-  set guifont=Bitstream\ Vera\ Sans\ Mono\ 16
-  set lines=999 columns=999
-"  set lines=999 columns=80
-"?  winp 468 0
-  if !(&diff)
-    let g:NERDTreeWinSize=35
-    autocmd VimEnter * NERDTree | wincmd p
-  endif
+  set guifont=Bitstream\ Vera\ Sans\ Mono\ 18
+  set lines=999 columns=81
+  winp 468 0
 endif
-
-if &diff
-  colorscheme werks 
-  set lines=999 columns=999
-else
-  colorscheme my_desert
-endif
-
-function Change_theme_and_line()
-  colo my_desert 
-  highlight ColorColumn ctermbg=0 guibg=grey25
-endfunction
-
-colo my_desert
-autocmd! BufEnter,BufNewFile *.txt colo morning
-autocmd! BufLeave *.txt call Change_theme_and_line()
 
 if has("syntax")
   syntax on
@@ -36,7 +15,7 @@ endif
 
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
-"set background=dark
+set background=dark
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
@@ -62,7 +41,6 @@ endif
 "set autowrite		" Automatically save before commands like :next and :make
 "set hidden		" Hide buffers when they are abandoned
 "set mouse=a		" Enable mouse usage (all modes)
-
 
 set nocompatible
 
@@ -96,13 +74,13 @@ set nobackup
 set noswapfile
 
 set tags=./tags,tags;
-:se tags+=/home/al/projects/opencv/tags
+":se tags+=/home/al/github/opencv/tags
 set autowrite
 set nowrap
 "command! -nargs=* Wrap set wrap linebreak nolist
 
-let Tlist_Use_Right_Window   = 1
 
+set tw=79
 set colorcolumn=80
 highlight ColorColumn ctermbg=0 guibg=grey25
 set cursorline
@@ -124,6 +102,7 @@ cabbrev m make -j4
 " grep for word under cursor in c/cpp/h-files
 "map <F7> <Esc>:exec("vimgrep ".expand("<cword>")." ./**/*.c ./**/*.h ./**/*.cpp ./**/*.hpp") <Bar> cw<CR>
 "map <F7> <Esc>:exec("vimgrep ".expand("<cword>")." ./**/*.c* ./**/*.h*") <Bar> cw<CR>
+map <F7> <Esc>:exec("vimgrep ".expand("<cword>")." ./**/*.py") <Bar> cw<CR>
 
 " Automatically open, but do not go to (if there are errors) the quickfix /
  " location list window, or close it when is has become empty.
@@ -150,10 +129,6 @@ au FileType python map <silent> <F9> Oimport ipdb; ipdb.set_trace(context=10)<es
 
 set laststatus=2
 
-map <S-E> :E <CR>
-
-map <S-N> :NERDTree <CR>
-
 vnoremap <silent> <C-k> :s#^#\##<cr>:noh<cr>
 vnoremap <silent> <C-u> :s#^\###<cr>:noh<cr>
 "nmap Ж :
@@ -172,7 +147,7 @@ highlight lCursor guifg=NONE guibg=Cyan
 
 set wrap
 
-set scrolloff=3 " Keep 3 lines below and above the cursor
+set scrolloff=7 " Keep 3 lines below and above the cursor
 set guioptions+=a " For copying in system clipboard and paste in a terminal
 
 
@@ -203,18 +178,27 @@ nnoremap <C-F5> :call <SID>compile_and_run()<CR>
 "nnoremap <F5> :Dispatch xterm -hold -e python %<cr>
 nnoremap <F5> :!python %<cr>
 
-set autochdir
+"set autochdir
 
 "augroup myvimrc
 "    au!
 "    au BufWritePost .vimrc so ~/.vimrc
 "augroup END
 
-let g:jedi#popup_on_dot = 0
-let g:jedi#documentation_command = "<S-k>"
-"let g:jedi#completions_command = "<C-Space>"
-let g:jedi#completions_command = "<C-n>"
 autocmd FileType python setlocal completeopt-=preview
 
-map <F12> <S-k>
-imap <F12> <S-k>
+nnoremap <silent> <C-^> :let &iminsert = (&iminsert == 0 ? 1 : 0)<CR>
+"nmap <silent> <C-\> <C-^> - not working 
+
+set guioptions+=a " For copying in system clipboard and paste in a terminal
+
+set cm=blowfish2
+
+colo solarized
+
+vmap <C-c> "+yi
+"vmap <C-x> "+c
+"vmap <C-v> c<ESC>"+p
+"imap <C-v> <C-r><C-o>+
+map <C-N> :NERDTreeToggle<CR>
+let NERDTreeQuitOnOpen=1
