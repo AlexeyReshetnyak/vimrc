@@ -108,3 +108,5 @@ set guiheadroom=0
 
 nnoremap <F3> "=strftime("%c")<CR>P
 inoremap <F3> <C-R>=strftime("%c")<CR>
+
+let g:filebeagle_show_hidden = 1
